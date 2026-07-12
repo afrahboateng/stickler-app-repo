@@ -46,13 +46,28 @@
     height: 96px;
     border-radius: 16px;
   }
+
+  .splash-logo-fallback {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    background: #FFFFFF;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: #000000;
+  }
 </style>
 </head>
 <body>
 
 <div class="phone">
   <div class="screen" id="splashScreen">
-    <img src="../stickler-assets/android-chrome-512x512.png" alt="Stickler Properties" class="splash-logo">
+    <img src="../stickler-assets/android-chrome-512x512.png" alt="Stickler Properties" class="splash-logo" onerror="this.style.display='none'; document.getElementById('splashFallback').style.display='flex';">
+    <div class="splash-logo-fallback" id="splashFallback">SP</div>
   </div>
 </div>
 

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Stickler Properties</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e5e5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  }
+
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: #000000;
+    border-radius: 44px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 32px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    flex-shrink: 0;
+  }
+
+  .page-header {
+    padding: 6px 20px 20px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #000000;
+  }
+
+  .page-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 30px;
+    color: #000000;
+  }
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
+  }
+
+  .account-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 0;
+    border-bottom: 1px solid #000000;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .account-row:first-child {
+    border-top: none;
+  }
+
+  .account-row:active {
+    background: rgba(0,0,0,0.03);
+  }
+
+  .row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .row-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+  }
+
+  .row-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: #000000;
+    opacity: 0.5;
+  }
+
+  .row-caret {
+    flex-shrink: 0;
+    opacity: 0.35;
+  }
+
+  .signout-row {
+    width: 100%;
+    margin-top: 28px;
+    padding: 16px 0;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    background: none;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .signout-row:active {
+    background: rgba(0,0,0,0.03);
+  }
+
+  .signout-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .footer-nav {
+    display: flex;
+    border-top: 1px solid #000000;
+    background: #000000;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 0 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #FFFFFF;
+    opacity: 0.4;
+  }
+
+  .nav-item.is-active {
+    opacity: 1;
+  }
+
+  .nav-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SUPPORT MODAL */
+  .support-overlay {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 800;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .support-overlay.is-open {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .support-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+  }
+
+  .support-card {
+    position: relative;
+    background: #000000;
+    border-radius: 0 0 28px 28px;
+    padding: 20px 24px 28px;
+    height: 56%;
+  }
+
+  .support-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .support-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .support-brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: block;
+  }
+
+  .support-brand-mark-fallback {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: #FFFFFF;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .support-brand-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    color: #FFFFFF;
+  }
+
+  .support-close {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .support-greeting {
+    font-size: 24px;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: 1.3;
+    margin-bottom: 28px;
+  }
+
+  .support-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .support-row-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+  }
+
+  .support-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .support-row-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+
+  .support-row-subtitle {
+    font-size: 12px;
+    color: #FFFFFF;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>&#9679;&#9679;&#9679;</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">My Account</div>
+    </div>
+
+    <div class="content">
+
+      <button class="account-row" onclick="">
+        <div class="row-text">
+          <div class="row-title">Account Details</div>
+          <div class="row-subtitle">Update personal information</div>
+        </div>
+        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      </button>
+
+      <button class="account-row" onclick="">
+        <div class="row-text">
+          <div class="row-title">My Markets</div>
+          <div class="row-subtitle">Manage your available markets</div>
+        </div>
+        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      </button>
+
+      <button class="account-row" onclick="">
+        <div class="row-text">
+          <div class="row-title">Documents</div>
+          <div class="row-subtitle">Legal documents and disclaimers</div>
+        </div>
+        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      </button>
+
+      <button class="signout-row" onclick="">
+        <span class="signout-label">Sign Out</span>
+      </button>
+
+    </div>
+
+    <div class="footer-nav">
+      <button class="nav-item" onclick="window.location.href='marketplace.html'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10V20H20V10"></path>
+          <path d="M2 10L4 4H20L22 10"></path>
+          <path d="M9 20V14H15V20"></path>
+        </svg>
+        <span class="nav-label">Marketplace</span>
+      </button>
+      <button class="nav-item is-active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <circle cx="12" cy="10" r="3"></circle>
+          <path d="M6.5 18.5C7.5 16 9.5 15 12 15s4.5 1 5.5 3.5"></path>
+        </svg>
+        <span class="nav-label">Account</span>
+      </button>
+      <button class="nav-item" onclick="openSupport()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5H20V16H8L4 19V5Z"></path>
+        </svg>
+        <span class="nav-label">Support</span>
+      </button>
+    </div>
+
+    <div class="support-overlay" id="supportOverlay">
+      <div class="support-backdrop" onclick="closeSupport()"></div>
+      <div class="support-card">
+        <div class="support-top-row">
+          <div class="support-brand">
+            <img src="../stickler-assets/android-chrome-192x192.png" alt="Stickler" class="support-brand-mark" onerror="this.style.display='none'; document.getElementById('supportBrandFallback').style.display='flex';">
+            <div class="support-brand-mark-fallback" id="supportBrandFallback">SP</div>
+            <div class="support-brand-name">Stickler</div>
+          </div>
+          <button class="support-close" onclick="closeSupport()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div class="support-greeting">Hi there 👋<br>How can we help?</div>
+
+        <button class="support-row" onclick="">
+          <div class="support-row-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V16H8L4 19V5Z"></path></svg>
+          </div>
+          <div class="support-row-text">
+            <div class="support-row-title">Messages</div>
+          </div>
+        </button>
+
+        <button class="support-row" onclick="">
+          <div class="support-row-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.4c-.8.3-1.2.8-1.2 1.6"></path><line x1="12" y1="16.5" x2="12" y2="16.5"></line></svg>
+          </div>
+          <div class="support-row-text">
+            <div class="support-row-title">Ask a question</div>
+            <div class="support-row-subtitle">AI agent and team can help</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openSupport() {
+    document.getElementById('supportOverlay').classList.add('is-open');
+  }
+  function closeSupport() {
+    document.getElementById('supportOverlay').classList.remove('is-open');
+  }
+</script>
+
+</body>
+</html>

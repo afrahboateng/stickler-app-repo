@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stickler Properties</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e5e5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  }
+
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: #000000;
+    border-radius: 44px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 32px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    flex-shrink: 0;
+  }
+
+  .onboard-header {
+    padding: 8px 32px 20px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .onboard-header p {
+    font-size: 15px;
+    font-weight: 500;
+    color: #000000;
+    line-height: 1.4;
+  }
+
+  .carousel {
+    flex: 1;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 32px;
+    text-align: center;
+  }
+
+  .slide-art {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 260px;
+    border-radius: 16px;
+    border: 1px dashed rgba(0,0,0,0.25);
+    background: rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .slide-art span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.35);
+  }
+
+  .slide-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: 12px;
+  }
+
+  .slide-subtext {
+    font-size: 15px;
+    font-weight: 400;
+    color: #000000;
+    opacity: 0.6;
+    line-height: 1.4;
+  }
+
+  .onboard-footer {
+    flex-shrink: 0;
+    padding: 20px 32px 28px;
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    height: 4px;
+    margin-bottom: 20px;
+  }
+
+  .progress-segment {
+    height: 100%;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.12);
+    flex-grow: 1;
+    transition: background 0.15s ease;
+  }
+
+  .progress-segment.is-filled {
+    background: #000000;
+  }
+
+  .get-started-btn {
+    width: 100%;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>&#9679;&#9679;&#9679;</span>
+    </div>
+
+    <div class="onboard-header">
+      <p>Our exclusive online marketplace allows investors to</p>
+    </div>
+
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-title">Discover</div>
+        <div class="slide-subtext">Get to know the local inventory</div>
+      </div>
+
+      <div class="slide">
+        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-title">Interact</div>
+        <div class="slide-subtext">Find the right property faster</div>
+      </div>
+
+      <div class="slide">
+        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-title">Acquire</div>
+        <div class="slide-subtext">Work with a Stickler agent to achieve your real estate investment goals</div>
+      </div>
+
+    </div>
+
+    <div class="onboard-footer">
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-segment" id="seg0"></div>
+        <div class="progress-segment" id="seg1"></div>
+        <div class="progress-segment" id="seg2"></div>
+      </div>
+      <button class="get-started-btn" onclick="window.location.href='marketplace.html'">Get Started</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var carousel = document.getElementById('carousel');
+  var segments = [document.getElementById('seg0'), document.getElementById('seg1'), document.getElementById('seg2')];
+
+  function updateProgress() {
+    var slideWidth = carousel.clientWidth;
+    var progress = carousel.scrollLeft / slideWidth; // 0 to 2
+    segments.forEach(function(seg, i) {
+      var distance = Math.abs(progress - i);
+      var fill = Math.max(0, 1 - distance);
+      seg.style.flexGrow = (1 + fill * 4).toString();
+      seg.classList.toggle('is-filled', fill > 0.5);
+    });
+  }
+
+  carousel.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Allow mouse-drag scrolling on desktop (touch works natively)
+  var isDown = false;
+  var startX, scrollLeftStart;
+  carousel.addEventListener('mousedown', function(e) {
+    isDown = true;
+    startX = e.pageX;
+    scrollLeftStart = carousel.scrollLeft;
+  });
+  window.addEventListener('mouseup', function() { isDown = false; });
+  window.addEventListener('mousemove', function(e) {
+    if (!isDown) return;
+    var dx = e.pageX - startX;
+    carousel.scrollLeft = scrollLeftStart - dx;
+  });
+</script>
+
+</body>
+</html>

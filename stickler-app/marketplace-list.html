@@ -371,13 +371,28 @@
     flex-shrink: 0;
     padding: 16px 24px 24px;
     border-top: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    gap: 10px;
   }
 
   .get-funding-btn {
-    width: 100%;
+    flex: 1;
     background: #000000;
     color: #FFFFFF;
     border: none;
+    border-radius: 10px;
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+
+  .get-offer-btn {
+    flex: 1;
+    background: none;
+    color: #000000;
+    border: 1px solid #000000;
     border-radius: 10px;
     padding: 16px 0;
     font-size: 15px;
@@ -603,6 +618,7 @@
         </div>
         <div class="detail-footer">
           <button class="get-funding-btn" onclick="">Get Funding</button>
+          <button class="get-offer-btn" onclick="">Get an Offer</button>
         </div>
       </div>
     </div>

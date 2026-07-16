@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Account — Stickler Properties</title>
+<title>Marketplace — Stickler Properties</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -47,93 +48,144 @@
     flex-shrink: 0;
   }
 
-  .page-header {
-    padding: 6px 20px 20px;
+  .header {
+    padding: 10px 20px 16px;
     flex-shrink: 0;
     border-bottom: 1px solid #000000;
   }
 
-  .page-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 30px;
-    color: #000000;
-  }
-
-  .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 20px;
-  }
-
-  .account-row {
-    width: 100%;
+  .search-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 22px 0;
-    border-bottom: 1px solid #000000;
+    gap: 10px;
+    background: #F2F2F0;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .search-bar svg {
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .search-bar input {
+    border: none;
+    outline: none;
     background: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .account-row:first-child {
-    border-top: none;
-  }
-
-  .account-row:active {
-    background: rgba(0,0,0,0.03);
-  }
-
-  .row-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .row-title {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    width: 100%;
     color: #000000;
   }
 
-  .row-subtitle {
-    font-size: 13px;
-    font-weight: 400;
+  .search-bar input::placeholder {
+    color: rgba(0,0,0,0.4);
+  }
+
+  .map-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  #map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .price-pill {
+    background: #000000;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 14px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    border: 1.5px solid #FFFFFF;
+  }
+
+  .price-pill::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #000000;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .leaflet-popup-content {
+    margin: 0;
+    width: 220px !important;
+  }
+
+  .popup-photo {
+    width: 100%;
+    height: 120px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .popup-card {
+    padding: 12px 14px;
+  }
+
+  .popup-price {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 2px;
+  }
+
+  .popup-address {
+    font-size: 12px;
+    color: #000000;
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+
+  .popup-stats {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: #000000;
     opacity: 0.5;
   }
 
-  .row-caret {
-    flex-shrink: 0;
-    opacity: 0.35;
-  }
-
-  .signout-row {
-    width: 100%;
-    margin-top: 28px;
-    padding: 16px 0;
-    border: 1px solid #000000;
-    border-radius: 10px;
-    background: none;
-    text-align: center;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .signout-row:active {
-    background: rgba(0,0,0,0.03);
-  }
-
-  .signout-label {
-    font-size: 15px;
+  .view-list-btn {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 22px;
+    padding: 11px 20px;
+    font-size: 13px;
     font-weight: 700;
-    color: #000000;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  .view-list-btn svg {
+    flex-shrink: 0;
   }
 
   .footer-nav {
@@ -166,6 +218,10 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+
+  .leaflet-control-attribution {
+    font-size: 9px !important;
   }
 
   /* SUPPORT MODAL */
@@ -312,44 +368,24 @@
       <span>&#9679;&#9679;&#9679;</span>
     </div>
 
-    <div class="page-header">
-      <div class="page-title">My Account</div>
+    <div class="header">
+      <div class="search-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="citySearch" type="text" placeholder="Search city, e.g. Atlanta, GA">
+      </div>
     </div>
 
-    <div class="content">
+    <div class="map-wrap">
+      <div id="map"></div>
 
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">Account Details</div>
-          <div class="row-subtitle">Update personal information</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      <button class="view-list-btn" id="viewListBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+        View list
       </button>
-
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">My Markets</div>
-          <div class="row-subtitle">Manage your available markets</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
-      </button>
-
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">Documents</div>
-          <div class="row-subtitle">Legal documents and disclaimers</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
-      </button>
-
-      <button class="signout-row" onclick="">
-        <span class="signout-label">Sign Out</span>
-      </button>
-
     </div>
 
     <div class="footer-nav">
-      <button class="nav-item" onclick="goToMarketplace()">
+      <button class="nav-item is-active">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 10V20H20V10"></path>
           <path d="M2 10L4 4H20L22 10"></path>
@@ -357,7 +393,7 @@
         </svg>
         <span class="nav-label">Marketplace</span>
       </button>
-      <button class="nav-item is-active">
+      <button class="nav-item" onclick="window.location.href='account.html'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"></circle>
           <circle cx="12" cy="10" r="3"></circle>
@@ -414,7 +450,62 @@
 </div>
 
 <script src="listings.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
+  var currentCity = resolveCurrentCity("atlanta");
+  setLastMarketplaceView("map");
+
+  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([CITIES[currentCity].lat, CITIES[currentCity].lng], CITIES[currentCity].zoom);
+
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 19
+  }).addTo(map);
+
+  var markers = [];
+
+  function renderMarkers(cityKey) {
+    markers.forEach(function(m) { map.removeLayer(m); });
+    markers = [];
+    getListingsForCity(cityKey).forEach(function(p) {
+      var icon = L.divIcon({
+        className: '',
+        html: '<div class="price-pill" style="position: relative;">' + formatPriceK(p.price) + '</div>',
+        iconSize: null,
+        iconAnchor: [30, 34]
+      });
+      var marker = L.marker([p.lat, p.lng], { icon: icon }).addTo(map);
+      marker.bindPopup(
+        '<img src="' + p.photo + '" class="popup-photo" alt="' + p.address + '">' +
+        '<div class="popup-card">' +
+          '<div class="popup-price">' + formatPriceK(p.price) + '</div>' +
+          '<div class="popup-address">' + p.address + '</div>' +
+          '<div class="popup-stats">' + formatStats(p) + '</div>' +
+        '</div>'
+      );
+      markers.push(marker);
+    });
+  }
+
+  renderMarkers(currentCity);
+
+  var searchInput = document.getElementById('citySearch');
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var match = resolveCityFromQuery(searchInput.value);
+      if (match) {
+        currentCity = match;
+        updateCurrentCity(currentCity);
+        map.flyTo([CITIES[currentCity].lat, CITIES[currentCity].lng], CITIES[currentCity].zoom);
+        renderMarkers(currentCity);
+      }
+    }
+  });
+
+  document.getElementById('viewListBtn').addEventListener('click', function() {
+    window.location.href = 'marketplace-list.html?city=' + currentCity;
+  });
+
   function openSupport() {
     document.getElementById('supportOverlay').classList.add('is-open');
   }

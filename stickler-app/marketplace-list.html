@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Account — Stickler Properties</title>
+<title>Marketplace — Stickler Properties</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -47,93 +47,191 @@
     flex-shrink: 0;
   }
 
-  .page-header {
-    padding: 6px 20px 20px;
+  .header {
+    padding: 10px 20px 14px;
     flex-shrink: 0;
     border-bottom: 1px solid #000000;
   }
 
-  .page-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 30px;
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F2F2F0;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+
+  .search-bar svg {
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .search-bar input {
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 14px;
+    width: 100%;
     color: #000000;
   }
 
-  .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 20px;
+  .search-bar input::placeholder {
+    color: rgba(0,0,0,0.4);
   }
 
-  .account-row {
-    width: 100%;
+  .filter-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 22px 0;
-    border-bottom: 1px solid #000000;
-    background: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
+    position: relative;
   }
 
-  .account-row:first-child {
-    border-top: none;
-  }
-
-  .account-row:active {
-    background: rgba(0,0,0,0.03);
-  }
-
-  .row-text {
+  .sort-btn {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .row-title {
-    font-size: 16px;
-    font-weight: 600;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
     color: #000000;
+    cursor: pointer;
   }
 
-  .row-subtitle {
-    font-size: 13px;
-    font-weight: 400;
+  .sort-btn svg {
+    flex-shrink: 0;
+  }
+
+  .results-count {
+    font-size: 12px;
+    font-weight: 600;
     color: #000000;
     opacity: 0.5;
   }
 
-  .row-caret {
-    flex-shrink: 0;
-    opacity: 0.35;
-  }
-
-  .signout-row {
-    width: 100%;
-    margin-top: 28px;
-    padding: 16px 0;
+  .sort-menu {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    background: #FFFFFF;
     border: 1px solid #000000;
     border-radius: 10px;
-    background: none;
-    text-align: center;
-    cursor: pointer;
-    font-family: inherit;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+    min-width: 180px;
   }
 
-  .signout-row:active {
-    background: rgba(0,0,0,0.03);
+  .sort-menu.is-open {
+    display: block;
   }
 
-  .signout-label {
-    font-size: 15px;
-    font-weight: 700;
+  .sort-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
     color: #000000;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    cursor: pointer;
+  }
+
+  .sort-option:last-child {
+    border-bottom: none;
+  }
+
+  .sort-option:hover,
+  .sort-option.is-active {
+    background: rgba(0,0,0,0.05);
+  }
+
+  .list-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  .list-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px 20px 24px;
+  }
+
+  .listing-card {
+    border: 1px solid #000000;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .listing-photo {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .listing-info {
+    padding: 14px 16px;
+  }
+
+  .listing-price {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    color: #000000;
+    margin-bottom: 4px;
+  }
+
+  .listing-address {
+    font-size: 13px;
+    color: #000000;
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+
+  .listing-stats {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #000000;
+    opacity: 0.5;
+  }
+
+  .view-map-btn {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 22px;
+    padding: 11px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  .view-map-btn svg {
+    flex-shrink: 0;
   }
 
   .footer-nav {
@@ -312,44 +410,40 @@
       <span>&#9679;&#9679;&#9679;</span>
     </div>
 
-    <div class="page-header">
-      <div class="page-title">My Account</div>
+    <div class="header">
+      <div class="search-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="citySearch" type="text" placeholder="Search city, e.g. Atlanta, GA">
+      </div>
+
+      <div class="filter-row">
+        <button class="sort-btn" id="sortBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"></path></svg>
+          <span id="sortLabel">Sort by price</span>
+        </button>
+        <div class="results-count" id="resultsCount">0 results</div>
+
+        <div class="sort-menu" id="sortMenu">
+          <button class="sort-option" data-sort="price-asc">Lowest price</button>
+          <button class="sort-option" data-sort="price-desc">Highest price</button>
+          <button class="sort-option" data-sort="beds">Beds</button>
+          <button class="sort-option" data-sort="baths">Bath</button>
+          <button class="sort-option" data-sort="sqft">Square feet</button>
+        </div>
+      </div>
     </div>
 
-    <div class="content">
+    <div class="list-wrap">
+      <div class="list-content" id="listContent"></div>
 
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">Account Details</div>
-          <div class="row-subtitle">Update personal information</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+      <button class="view-map-btn" id="viewMapBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"></path><line x1="9" y1="7" x2="9" y2="20"></line><line x1="15" y1="4" x2="15" y2="17"></line></svg>
+        View map
       </button>
-
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">My Markets</div>
-          <div class="row-subtitle">Manage your available markets</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
-      </button>
-
-      <button class="account-row" onclick="">
-        <div class="row-text">
-          <div class="row-title">Documents</div>
-          <div class="row-subtitle">Legal documents and disclaimers</div>
-        </div>
-        <svg class="row-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
-      </button>
-
-      <button class="signout-row" onclick="">
-        <span class="signout-label">Sign Out</span>
-      </button>
-
     </div>
 
     <div class="footer-nav">
-      <button class="nav-item" onclick="goToMarketplace()">
+      <button class="nav-item is-active">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 10V20H20V10"></path>
           <path d="M2 10L4 4H20L22 10"></path>
@@ -357,7 +451,7 @@
         </svg>
         <span class="nav-label">Marketplace</span>
       </button>
-      <button class="nav-item is-active">
+      <button class="nav-item" onclick="window.location.href='account.html'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"></circle>
           <circle cx="12" cy="10" r="3"></circle>
@@ -415,6 +509,82 @@
 
 <script src="listings.js"></script>
 <script>
+  var currentCity = resolveCurrentCity("atlanta");
+  setLastMarketplaceView("list");
+  var currentSort = null;
+
+  var searchInput = document.getElementById('citySearch');
+  var listContent = document.getElementById('listContent');
+  var resultsCount = document.getElementById('resultsCount');
+  var sortBtn = document.getElementById('sortBtn');
+  var sortLabel = document.getElementById('sortLabel');
+  var sortMenu = document.getElementById('sortMenu');
+
+  function sortListings(listings) {
+    var sorted = listings.slice();
+    if (currentSort === 'price-asc') sorted.sort(function(a, b) { return a.price - b.price; });
+    else if (currentSort === 'price-desc') sorted.sort(function(a, b) { return b.price - a.price; });
+    else if (currentSort === 'beds') sorted.sort(function(a, b) { return b.beds - a.beds; });
+    else if (currentSort === 'baths') sorted.sort(function(a, b) { return b.baths - a.baths; });
+    else if (currentSort === 'sqft') sorted.sort(function(a, b) { return b.sqft - a.sqft; });
+    return sorted;
+  }
+
+  function render() {
+    var listings = sortListings(getListingsForCity(currentCity));
+    resultsCount.textContent = listings.length + (listings.length === 1 ? ' result' : ' results') + ' in ' + CITIES[currentCity].label;
+
+    listContent.innerHTML = listings.map(function(p) {
+      return '' +
+        '<div class="listing-card">' +
+          '<img src="' + p.photo + '" class="listing-photo" alt="' + p.address + '">' +
+          '<div class="listing-info">' +
+            '<div class="listing-price">' + formatPriceK(p.price) + '</div>' +
+            '<div class="listing-address">' + p.address + '</div>' +
+            '<div class="listing-stats">' + formatStats(p) + '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  render();
+
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var match = resolveCityFromQuery(searchInput.value);
+      if (match) {
+        currentCity = match;
+        updateCurrentCity(currentCity);
+        render();
+      }
+    }
+  });
+
+  sortBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    sortMenu.classList.toggle('is-open');
+  });
+
+  document.addEventListener('click', function() {
+    sortMenu.classList.remove('is-open');
+  });
+
+  document.querySelectorAll('.sort-option').forEach(function(opt) {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      currentSort = opt.getAttribute('data-sort');
+      sortLabel.textContent = opt.textContent;
+      document.querySelectorAll('.sort-option').forEach(function(o) { o.classList.remove('is-active'); });
+      opt.classList.add('is-active');
+      sortMenu.classList.remove('is-open');
+      render();
+    });
+  });
+
+  document.getElementById('viewMapBtn').addEventListener('click', function() {
+    window.location.href = 'marketplace-map.html?city=' + currentCity;
+  });
+
   function openSupport() {
     document.getElementById('supportOverlay').classList.add('is-open');
   }

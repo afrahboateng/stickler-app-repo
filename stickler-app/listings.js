@@ -115,3 +115,12 @@ function goToMarketplace() {
   var page = view === "list" ? "marketplace-list.html" : "marketplace-map.html";
   window.location.href = page;
 }
+
+// --- Reusable "thanks for registering" notice ---
+// This same block shows up in a few places (My Markets today, likely more
+// later), so the copy lives here once instead of being duplicated per page.
+var REGISTRATION_NOTICE_TEXT = "Thanks for registering! A Stickler agent will contact you shortly to set up a quick onboarding call to get you access to our exclusive marketplace. This verification helps maintain our investor-only marketplace's integrity and ensures you're ready to navigate our process so you don't miss out on the best deals. You can also reach out directly at (404) 555-0182.";
+
+function renderRegistrationNotice() {
+  return '<div class="registration-notice"><div class="registration-notice-title">Thanks for registering!</div><div class="registration-notice-text">A Stickler agent will contact you shortly to set up a quick onboarding call to get you access to our exclusive marketplace. This verification helps maintain our investor-only marketplace\'s integrity and ensures you\'re ready to navigate our process so you don\'t miss out on the best deals. You can also reach out directly at <strong>(404) 555-0182</strong>.</div></div>';
+}

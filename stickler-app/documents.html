@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketplace — Stickler Properties</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<title>Documents — Stickler Properties</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -48,144 +47,66 @@
     flex-shrink: 0;
   }
 
-  .header {
-    padding: 10px 20px 16px;
+  .page-header {
+    padding: 6px 20px 20px;
     flex-shrink: 0;
     border-bottom: 1px solid #000000;
-  }
-
-  .search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #F2F2F0;
-    border: 1px solid #000000;
-    border-radius: 10px;
-    padding: 10px 14px;
   }
 
-  .search-bar svg {
-    flex-shrink: 0;
-    opacity: 0.5;
-  }
-
-  .search-bar input {
-    border: none;
-    outline: none;
+  .back-btn {
     background: none;
-    font-size: 14px;
-    width: 100%;
+    border: none;
+    cursor: pointer;
     color: #000000;
+    padding: 4px;
+    display: flex;
   }
 
-  .search-bar input::placeholder {
-    color: rgba(0,0,0,0.4);
-  }
-
-  .map-wrap {
-    flex: 1;
-    position: relative;
-    min-height: 0;
-  }
-
-  #map {
-    width: 100%;
-    height: 100%;
-  }
-
-  .price-pill {
-    background: #000000;
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 10px;
-    border-radius: 14px;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-    border: 1.5px solid #FFFFFF;
-  }
-
-  .price-pill::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -6px;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid #000000;
-  }
-
-  .leaflet-popup-content-wrapper {
-    border-radius: 10px;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .leaflet-popup-content {
-    margin: 0;
-    width: 220px !important;
-  }
-
-  .popup-photo {
-    width: 100%;
-    height: 120px;
-    display: block;
-    object-fit: cover;
-  }
-
-  .popup-card {
-    padding: 12px 14px;
-  }
-
-  .popup-price {
+  .page-title {
     font-family: Georgia, 'Times New Roman', serif;
-    font-size: 20px;
+    font-size: 26px;
     color: #000000;
-    margin-bottom: 2px;
   }
 
-  .popup-address {
-    font-size: 12px;
-    color: #000000;
-    opacity: 0.6;
-    margin-bottom: 8px;
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 20px;
   }
 
-  .popup-stats {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #000000;
-    opacity: 0.5;
-  }
-
-  .view-list-btn {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 500;
+  .doc-row {
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: #000000;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 22px;
-    padding: 11px 20px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid #000000;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    text-align: left;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    font-family: inherit;
   }
 
-  .view-list-btn svg {
+  .doc-row:active {
+    background: rgba(0,0,0,0.03);
+  }
+
+  .doc-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000000;
+  }
+
+  .doc-link-icon {
     flex-shrink: 0;
+    opacity: 0.4;
   }
 
   .footer-nav {
@@ -218,10 +139,6 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-  }
-
-  .leaflet-control-attribution {
-    font-size: 9px !important;
   }
 
   /* SUPPORT MODAL */
@@ -368,24 +285,44 @@
       <span>&#9679;&#9679;&#9679;</span>
     </div>
 
-    <div class="header">
-      <div class="search-bar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input id="citySearch" type="text" placeholder="Search city, e.g. Atlanta, GA">
-      </div>
+    <div class="page-header">
+      <button class="back-btn" onclick="window.location.href='account.html'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+      </button>
+      <div class="page-title">Documents</div>
     </div>
 
-    <div class="map-wrap">
-      <div id="map"></div>
+    <div class="content">
 
-      <button class="view-list-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
-        View list
+      <button class="doc-row" onclick="">
+        <div class="doc-title">Disclaimer</div>
+        <svg class="doc-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
       </button>
+
+      <button class="doc-row" onclick="">
+        <div class="doc-title">Do Not Sell My Info</div>
+        <svg class="doc-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </button>
+
+      <button class="doc-row" onclick="">
+        <div class="doc-title">For CA Residents</div>
+        <svg class="doc-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </button>
+
+      <button class="doc-row" onclick="">
+        <div class="doc-title">Privacy Policy</div>
+        <svg class="doc-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </button>
+
+      <button class="doc-row" onclick="">
+        <div class="doc-title">Terms of Use</div>
+        <svg class="doc-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </button>
+
     </div>
 
     <div class="footer-nav">
-      <button class="nav-item is-active">
+      <button class="nav-item" onclick="goToMarketplace()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 10V20H20V10"></path>
           <path d="M2 10L4 4H20L22 10"></path>
@@ -393,7 +330,7 @@
         </svg>
         <span class="nav-label">Marketplace</span>
       </button>
-      <button class="nav-item" onclick="window.location.href='account.html'">
+      <button class="nav-item is-active">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"></circle>
           <circle cx="12" cy="10" r="3"></circle>
@@ -425,7 +362,7 @@
 
         <div class="support-greeting">Hi there 👋<br>How can we help?</div>
 
-        <button class="support-row" onclick="">
+        <button class="support-row" onclick="window.location.href='ask.html'">
           <div class="support-row-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V16H8L4 19V5Z"></path></svg>
           </div>
@@ -449,68 +386,8 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="listings.js"></script>
 <script>
-  var cities = {
-    "atlanta": { lat: 33.7490, lng: -84.3880, zoom: 11 },
-    "atlanta, ga": { lat: 33.7490, lng: -84.3880, zoom: 11 },
-    "decatur": { lat: 33.7748, lng: -84.2963, zoom: 12 },
-    "decatur, ga": { lat: 33.7748, lng: -84.2963, zoom: 12 },
-    "marietta": { lat: 33.9526, lng: -84.5499, zoom: 12 },
-    "marietta, ga": { lat: 33.9526, lng: -84.5499, zoom: 12 },
-    "sandy springs": { lat: 33.9304, lng: -84.3733, zoom: 12 },
-    "sandy springs, ga": { lat: 33.9304, lng: -84.3733, zoom: 12 }
-  };
-
-  var properties = [
-    { lat: 33.7530, lng: -84.3897, price: "$365K", address: "142 Ponce De Leon Ave, Atlanta, GA", stats: "3 bd · 2 ba · 1,840 sqft", photo: "https://images.unsplash.com/photo-1583437624797-0e3348843acd?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.7701, lng: -84.3733, price: "$185K", address: "908 Highland Ave, Atlanta, GA", stats: "2 bd · 1 ba · 1,120 sqft", photo: "https://images.unsplash.com/photo-1710055531207-83174a3e0c30?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.8034, lng: -84.3733, price: "$438K", address: "3311 Brookhaven Trce, Atlanta, GA", stats: "4 bd · 3 ba · 2,260 sqft", photo: "https://images.unsplash.com/photo-1564122272812-ef0c0790db4f?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.6796, lng: -84.4394, price: "$228K", address: "775 Sylvan Rd, East Point, GA", stats: "3 bd · 2 ba · 1,510 sqft", photo: "https://images.unsplash.com/photo-1631574629960-1958e87c9f4e?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.7748, lng: -84.2963, price: "$298K", address: "512 Commerce Dr, Decatur, GA", stats: "3 bd · 2 ba · 1,690 sqft", photo: "https://images.unsplash.com/photo-1616098565649-3b2d5e33234c?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.7834, lng: -84.2900, price: "$351K", address: "220 Sycamore St, Decatur, GA", stats: "4 bd · 2 ba · 2,040 sqft", photo: "https://images.unsplash.com/photo-1592239658467-35433cdba25f?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.9526, lng: -84.5499, price: "$204K", address: "88 Whitlock Ave, Marietta, GA", stats: "2 bd · 2 ba · 1,340 sqft", photo: "https://images.unsplash.com/photo-1688851164809-8b4f12e672c8?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.9601, lng: -84.5350, price: "$276K", address: "1500 Roswell St, Marietta, GA", stats: "3 bd · 2 ba · 1,780 sqft", photo: "https://images.unsplash.com/photo-1744603271618-6597a9d392c9?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.9304, lng: -84.3733, price: "$419K", address: "640 Hammond Dr, Sandy Springs, GA", stats: "3 bd · 2 ba · 1,450 sqft", photo: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?fm=jpg&q=80&w=800&fit=crop" },
-    { lat: 33.9210, lng: -84.3610, price: "$258K", address: "3025 Roswell Rd, Sandy Springs, GA", stats: "3 bd · 2 ba · 1,690 sqft", photo: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fm=jpg&q=80&w=800&fit=crop" }
-  ];
-
-  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([33.7490, -84.3880], 11);
-
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri',
-    maxZoom: 19
-  }).addTo(map);
-
-  properties.forEach(function(p) {
-    var icon = L.divIcon({
-      className: '',
-      html: '<div class="price-pill" style="position: relative;">' + p.price + '</div>',
-      iconSize: null,
-      iconAnchor: [30, 34]
-    });
-    var marker = L.marker([p.lat, p.lng], { icon: icon }).addTo(map);
-    marker.bindPopup(
-      '<img src="' + p.photo + '" class="popup-photo" alt="' + p.address + '">' +
-      '<div class="popup-card">' +
-        '<div class="popup-price">' + p.price + '</div>' +
-        '<div class="popup-address">' + p.address + '</div>' +
-        '<div class="popup-stats">' + p.stats + '</div>' +
-      '</div>'
-    );
-  });
-
-  var searchInput = document.getElementById('citySearch');
-  searchInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      var query = searchInput.value.trim().toLowerCase();
-      var match = cities[query];
-      if (match) {
-        map.flyTo([match.lat, match.lng], match.zoom);
-      }
-    }
-  });
-
   function openSupport() {
     document.getElementById('supportOverlay').classList.add('is-open');
   }

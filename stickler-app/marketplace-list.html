@@ -173,6 +173,7 @@
     border-radius: 14px;
     overflow: hidden;
     margin-bottom: 16px;
+    cursor: pointer;
   }
 
   .listing-photo {
@@ -264,6 +265,119 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+
+  /* LISTING DETAIL MODAL */
+  .detail-overlay {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .detail-overlay.is-open {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .detail-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+  }
+
+  .detail-card {
+    position: relative;
+    background: #FFFFFF;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    height: 92%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .detail-photo-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .detail-photo {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .detail-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  .detail-price {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 30px;
+    color: #000000;
+    margin-bottom: 6px;
+  }
+
+  .detail-address {
+    font-size: 14px;
+    color: #000000;
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .detail-stats {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #000000;
+    opacity: 0.5;
+  }
+
+  .detail-footer {
+    flex-shrink: 0;
+    padding: 16px 24px 24px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .get-funding-btn {
+    width: 100%;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
   }
 
   /* SUPPORT MODAL */
@@ -467,6 +581,26 @@
       </button>
     </div>
 
+    <div class="detail-overlay" id="detailOverlay">
+      <div class="detail-backdrop" onclick="closeDetail()"></div>
+      <div class="detail-card">
+        <div class="detail-photo-wrap">
+          <img src="" alt="" class="detail-photo" id="detailPhoto">
+          <button class="detail-close" onclick="closeDetail()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="detail-body">
+          <div class="detail-price" id="detailPrice"></div>
+          <div class="detail-address" id="detailAddress"></div>
+          <div class="detail-stats" id="detailStats"></div>
+        </div>
+        <div class="detail-footer">
+          <button class="get-funding-btn" onclick="">Get Funding</button>
+        </div>
+      </div>
+    </div>
+
     <div class="support-overlay" id="supportOverlay">
       <div class="support-backdrop" onclick="closeSupport()"></div>
       <div class="support-card">
@@ -483,7 +617,7 @@
 
         <div class="support-greeting">Hi there 👋<br>How can we help?</div>
 
-        <button class="support-row" onclick="">
+        <button class="support-row" onclick="window.location.href='ask.html'">
           <div class="support-row-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V16H8L4 19V5Z"></path></svg>
           </div>
@@ -530,13 +664,15 @@
     return sorted;
   }
 
-  function render() {
-    var listings = sortListings(getListingsForCity(currentCity));
-    resultsCount.textContent = listings.length + (listings.length === 1 ? ' result' : ' results') + ' in ' + CITIES[currentCity].label;
+  var currentListings = [];
 
-    listContent.innerHTML = listings.map(function(p) {
+  function render() {
+    currentListings = sortListings(getListingsForCity(currentCity));
+    resultsCount.textContent = currentListings.length + (currentListings.length === 1 ? ' result' : ' results') + ' in ' + CITIES[currentCity].label;
+
+    listContent.innerHTML = currentListings.map(function(p, idx) {
       return '' +
-        '<div class="listing-card">' +
+        '<div class="listing-card" onclick="openDetail(' + idx + ')">' +
           '<img src="' + p.photo + '" class="listing-photo" alt="' + p.address + '">' +
           '<div class="listing-info">' +
             '<div class="listing-price">' + formatPriceK(p.price) + '</div>' +
@@ -545,6 +681,19 @@
           '</div>' +
         '</div>';
     }).join('');
+  }
+
+  function openDetail(idx) {
+    var p = currentListings[idx];
+    document.getElementById('detailPhoto').src = p.photo;
+    document.getElementById('detailPhoto').alt = p.address;
+    document.getElementById('detailPrice').textContent = formatPriceK(p.price);
+    document.getElementById('detailAddress').textContent = p.address;
+    document.getElementById('detailStats').textContent = formatStats(p);
+    document.getElementById('detailOverlay').classList.add('is-open');
+  }
+  function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('is-open');
   }
 
   render();

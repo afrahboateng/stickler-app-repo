@@ -121,11 +121,19 @@
   .leaflet-popup-content-wrapper {
     border-radius: 10px;
     padding: 0;
+    overflow: hidden;
   }
 
   .leaflet-popup-content {
     margin: 0;
     width: 220px !important;
+  }
+
+  .popup-photo {
+    width: 100%;
+    height: 120px;
+    display: block;
+    object-fit: cover;
   }
 
   .popup-card {
@@ -363,7 +371,7 @@
     <div class="header">
       <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input id="citySearch" type="text" placeholder="Search city, e.g. Austin, TX">
+        <input id="citySearch" type="text" placeholder="Search city, e.g. Atlanta, GA">
       </div>
     </div>
 
@@ -444,30 +452,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
   var cities = {
-    "austin": { lat: 30.2672, lng: -97.7431, zoom: 11 },
-    "austin, tx": { lat: 30.2672, lng: -97.7431, zoom: 11 },
-    "dallas": { lat: 32.7767, lng: -96.7970, zoom: 11 },
-    "dallas, tx": { lat: 32.7767, lng: -96.7970, zoom: 11 },
-    "houston": { lat: 29.7604, lng: -95.3698, zoom: 11 },
-    "houston, tx": { lat: 29.7604, lng: -95.3698, zoom: 11 },
-    "san antonio": { lat: 29.4241, lng: -98.4936, zoom: 11 },
-    "san antonio, tx": { lat: 29.4241, lng: -98.4936, zoom: 11 }
+    "atlanta": { lat: 33.7490, lng: -84.3880, zoom: 11 },
+    "atlanta, ga": { lat: 33.7490, lng: -84.3880, zoom: 11 },
+    "decatur": { lat: 33.7748, lng: -84.2963, zoom: 12 },
+    "decatur, ga": { lat: 33.7748, lng: -84.2963, zoom: 12 },
+    "marietta": { lat: 33.9526, lng: -84.5499, zoom: 12 },
+    "marietta, ga": { lat: 33.9526, lng: -84.5499, zoom: 12 },
+    "sandy springs": { lat: 33.9304, lng: -84.3733, zoom: 12 },
+    "sandy springs, ga": { lat: 33.9304, lng: -84.3733, zoom: 12 }
   };
 
   var properties = [
-    { lat: 30.2711, lng: -97.7437, price: "$365K", address: "1420 Willow Creek Dr, Austin, TX", stats: "3 bd · 2 ba · 1,840 sqft" },
-    { lat: 30.2495, lng: -97.7663, price: "$185K", address: "908 Rosewood Ave, Austin, TX", stats: "2 bd · 1 ba · 1,120 sqft" },
-    { lat: 30.2938, lng: -97.7180, price: "$412K", address: "3311 Pecan Grove Ln, Austin, TX", stats: "4 bd · 3 ba · 2,260 sqft" },
-    { lat: 30.2231, lng: -97.7854, price: "$228K", address: "775 Bluebonnet Way, Austin, TX", stats: "3 bd · 2 ba · 1,510 sqft" },
-    { lat: 32.7831, lng: -96.8067, price: "$298K", address: "512 Maple Ridge Rd, Dallas, TX", stats: "3 bd · 2 ba · 1,690 sqft" },
-    { lat: 32.7455, lng: -96.7550, price: "$351K", address: "2200 Elm Fork Ct, Dallas, TX", stats: "4 bd · 2 ba · 2,040 sqft" },
-    { lat: 29.7717, lng: -95.4013, price: "$204K", address: "88 Buffalo Bayou St, Houston, TX", stats: "2 bd · 2 ba · 1,340 sqft" },
-    { lat: 29.7383, lng: -95.3322, price: "$276K", address: "1500 Heights Blvd, Houston, TX", stats: "3 bd · 2 ba · 1,780 sqft" },
-    { lat: 29.4362, lng: -98.4677, price: "$219K", address: "640 Alamo Heights Dr, San Antonio, TX", stats: "3 bd · 2 ba · 1,450 sqft" },
-    { lat: 29.4622, lng: -98.5297, price: "$258K", address: "3025 Medina River Rd, San Antonio, TX", stats: "3 bd · 2 ba · 1,690 sqft" }
+    { lat: 33.7530, lng: -84.3897, price: "$365K", address: "142 Ponce De Leon Ave, Atlanta, GA", stats: "3 bd · 2 ba · 1,840 sqft", photo: "https://images.unsplash.com/photo-1583437624797-0e3348843acd?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.7701, lng: -84.3733, price: "$185K", address: "908 Highland Ave, Atlanta, GA", stats: "2 bd · 1 ba · 1,120 sqft", photo: "https://images.unsplash.com/photo-1710055531207-83174a3e0c30?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.8034, lng: -84.3733, price: "$438K", address: "3311 Brookhaven Trce, Atlanta, GA", stats: "4 bd · 3 ba · 2,260 sqft", photo: "https://images.unsplash.com/photo-1564122272812-ef0c0790db4f?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.6796, lng: -84.4394, price: "$228K", address: "775 Sylvan Rd, East Point, GA", stats: "3 bd · 2 ba · 1,510 sqft", photo: "https://images.unsplash.com/photo-1631574629960-1958e87c9f4e?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.7748, lng: -84.2963, price: "$298K", address: "512 Commerce Dr, Decatur, GA", stats: "3 bd · 2 ba · 1,690 sqft", photo: "https://images.unsplash.com/photo-1616098565649-3b2d5e33234c?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.7834, lng: -84.2900, price: "$351K", address: "220 Sycamore St, Decatur, GA", stats: "4 bd · 2 ba · 2,040 sqft", photo: "https://images.unsplash.com/photo-1592239658467-35433cdba25f?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.9526, lng: -84.5499, price: "$204K", address: "88 Whitlock Ave, Marietta, GA", stats: "2 bd · 2 ba · 1,340 sqft", photo: "https://images.unsplash.com/photo-1688851164809-8b4f12e672c8?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.9601, lng: -84.5350, price: "$276K", address: "1500 Roswell St, Marietta, GA", stats: "3 bd · 2 ba · 1,780 sqft", photo: "https://images.unsplash.com/photo-1744603271618-6597a9d392c9?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.9304, lng: -84.3733, price: "$419K", address: "640 Hammond Dr, Sandy Springs, GA", stats: "3 bd · 2 ba · 1,450 sqft", photo: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?fm=jpg&q=80&w=800&fit=crop" },
+    { lat: 33.9210, lng: -84.3610, price: "$258K", address: "3025 Roswell Rd, Sandy Springs, GA", stats: "3 bd · 2 ba · 1,690 sqft", photo: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fm=jpg&q=80&w=800&fit=crop" }
   ];
 
-  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([30.2672, -97.7431], 11);
+  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([33.7490, -84.3880], 11);
 
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri',
@@ -483,6 +491,7 @@
     });
     var marker = L.marker([p.lat, p.lng], { icon: icon }).addTo(map);
     marker.bindPopup(
+      '<img src="' + p.photo + '" class="popup-photo" alt="' + p.address + '">' +
       '<div class="popup-card">' +
         '<div class="popup-price">' + p.price + '</div>' +
         '<div class="popup-address">' + p.address + '</div>' +

@@ -90,15 +90,32 @@
     aspect-ratio: 1 / 1;
     max-height: 260px;
     border-radius: 16px;
-    border: 1px dashed rgba(0,0,0,0.25);
-    background: rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,0,0.08);
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 28px;
+    overflow: hidden;
+    position: relative;
   }
 
-  .slide-art span {
+  .slide-art-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12px;
+  }
+
+  .slide-art-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .slide-art-fallback span {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -176,19 +193,28 @@
     <div class="carousel" id="carousel">
 
       <div class="slide">
-        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-art">
+          <img src="../stickler-assets/Discover.png" alt="Discover" class="slide-art-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="slide-art-fallback"><span>Image needed</span></div>
+        </div>
         <div class="slide-title">Discover</div>
         <div class="slide-subtext">Get to know the local inventory</div>
       </div>
 
       <div class="slide">
-        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-art">
+          <img src="../stickler-assets/Interact.png" alt="Interact" class="slide-art-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="slide-art-fallback"><span>Image needed</span></div>
+        </div>
         <div class="slide-title">Interact</div>
         <div class="slide-subtext">Find the right property faster</div>
       </div>
 
       <div class="slide">
-        <div class="slide-art"><span>Image needed</span></div>
+        <div class="slide-art">
+          <img src="../stickler-assets/Acquire.png" alt="Acquire" class="slide-art-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="slide-art-fallback"><span>Image needed</span></div>
+        </div>
         <div class="slide-title">Acquire</div>
         <div class="slide-subtext">Work with a Stickler agent to achieve your real estate investment goals</div>
       </div>

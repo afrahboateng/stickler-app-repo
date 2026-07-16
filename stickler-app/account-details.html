@@ -223,14 +223,14 @@
   .support-brand-mark {
     width: 26px;
     height: 26px;
-    border-radius: 6px;
+    border-radius: 0;
     display: block;
   }
 
   .support-brand-mark-fallback {
     width: 26px;
     height: 26px;
-    border-radius: 6px;
+    border-radius: 0;
     background: #FFFFFF;
     display: none;
     align-items: center;
@@ -410,16 +410,17 @@
 
         <div class="support-greeting">Hi there 👋<br>How can we help?</div>
 
-        <button class="support-row" onclick="window.location.href='ask.html'">
+        <button class="support-row" onclick="window.location.href='messages.html'">
           <div class="support-row-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5H20V16H8L4 19V5Z"></path></svg>
           </div>
           <div class="support-row-text">
-            <div class="support-row-title">Messages</div>
+            <div class="support-row-title">Notifications</div>
+          <div class="support-row-subtitle">Messages from the team will be shown here</div>
           </div>
         </button>
 
-        <button class="support-row" onclick="">
+        <button class="support-row" onclick="window.location.href='ask.html'">
           <div class="support-row-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.4c-.8.3-1.2.8-1.2 1.6"></path><line x1="12" y1="16.5" x2="12" y2="16.5"></line></svg>
           </div>

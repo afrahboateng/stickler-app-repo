@@ -116,6 +116,29 @@ function goToMarketplace() {
   window.location.href = page;
 }
 
+// --- Dynamic "Showing Times" dates ---
+// Returns the next `count` upcoming Fridays, always strictly after today
+// (so if today is Friday, the first result is next week's Friday, not today).
+function getNextFridays(count) {
+  var results = [];
+  var d = new Date();
+  d.setHours(0, 0, 0, 0);
+  do {
+    d.setDate(d.getDate() + 1);
+  } while (d.getDay() !== 5);
+
+  for (var i = 0; i < count; i++) {
+    results.push(new Date(d));
+    d.setDate(d.getDate() + 7);
+  }
+  return results;
+}
+
+function formatShowingDate(date) {
+  var options = { weekday: "short", month: "short", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+}
+
 // --- Reusable "thanks for registering" notice ---
 // This same block shows up in a few places (My Markets today, likely more
 // later), so the copy lives here once instead of being duplicated per page.

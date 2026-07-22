@@ -375,6 +375,52 @@
     gap: 10px;
   }
 
+  .showing-times-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .showing-times-panel {
+    display: none;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .showing-times-panel.is-open {
+    display: flex;
+  }
+
+  .showing-time-option {
+    flex: 1;
+    background: #F2F2F0;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 10px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .showing-time-option.is-selected {
+    background: #000000;
+    color: #FFFFFF;
+    border-color: #000000;
+  }
+
   .get-funding-btn {
     flex: 1;
     background: #000000;
@@ -390,9 +436,9 @@
 
   .make-offer-btn {
     flex: 1;
-    background: none;
-    color: #000000;
-    border: 1px solid #000000;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
     border-radius: 10px;
     padding: 16px 0;
     font-size: 15px;
@@ -400,6 +446,8 @@
     letter-spacing: 0.02em;
     cursor: pointer;
   }
+
+  
 
   /* SUPPORT MODAL */
   .support-overlay {
@@ -615,6 +663,12 @@
           <div class="detail-price" id="detailPrice"></div>
           <div class="detail-address" id="detailAddress"></div>
           <div class="detail-stats" id="detailStats"></div>
+
+          <button class="showing-times-btn" id="showingTimesBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Showing Times
+          </button>
+          <div class="showing-times-panel" id="showingTimesPanel"></div>
         </div>
         <div class="detail-footer">
           <button class="get-funding-btn" onclick="">Get Funding</button>
@@ -713,11 +767,30 @@
     document.getElementById('detailPrice').textContent = formatPriceK(p.price);
     document.getElementById('detailAddress').textContent = p.address;
     document.getElementById('detailStats').textContent = formatStats(p);
+    document.getElementById('showingTimesPanel').classList.remove('is-open');
     document.getElementById('detailOverlay').classList.add('is-open');
   }
   function closeDetail() {
     document.getElementById('detailOverlay').classList.remove('is-open');
   }
+
+  var showingTimesPanel = document.getElementById('showingTimesPanel');
+  showingTimesPanel.innerHTML = getNextFridays(3).map(function(d, i) {
+    return '<div class="showing-time-option" data-idx="' + i + '">' + formatShowingDate(d) + '</div>';
+  }).join('');
+
+  document.getElementById('showingTimesBtn').addEventListener('click', function() {
+    showingTimesPanel.classList.toggle('is-open');
+  });
+
+  showingTimesPanel.addEventListener('click', function(e) {
+    var opt = e.target.closest('.showing-time-option');
+    if (!opt) return;
+    showingTimesPanel.querySelectorAll('.showing-time-option').forEach(function(el) {
+      el.classList.remove('is-selected');
+    });
+    opt.classList.add('is-selected');
+  });
 
   render();
 

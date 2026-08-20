@@ -143,37 +143,7 @@
     color: #000000;
   }
 
-  .footer-nav {
-    display: flex;
-    border-top: 1px solid #000000;
-    background: #000000;
-    flex-shrink: 0;
-  }
-
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    padding: 10px 0 22px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #FFFFFF;
-    opacity: 0.4;
-  }
-
-  .nav-item.is-active {
-    opacity: 1;
-  }
-
-  .nav-label {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
+  /* nav styles moved to app-nav.js */
 
   /* SUPPORT MODAL */
   .support-overlay {
@@ -369,30 +339,7 @@
 
     </div>
 
-    <div class="footer-nav">
-      <button class="nav-item" onclick="goToMarketplace()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 10V20H20V10"></path>
-          <path d="M2 10L4 4H20L22 10"></path>
-          <path d="M9 20V14H15V20"></path>
-        </svg>
-        <span class="nav-label">Marketplace</span>
-      </button>
-      <button class="nav-item is-active">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"></circle>
-          <circle cx="12" cy="10" r="3"></circle>
-          <path d="M6.5 18.5C7.5 16 9.5 15 12 15s4.5 1 5.5 3.5"></path>
-        </svg>
-        <span class="nav-label">Account</span>
-      </button>
-      <button class="nav-item" onclick="openSupport()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 5H20V16H8L4 19V5Z"></path>
-        </svg>
-        <span class="nav-label">Support</span>
-      </button>
-    </div>
+    <div id="appNavMount"></div>
 
     <div class="support-overlay" id="supportOverlay">
       <div class="support-backdrop" onclick="closeSupport()"></div>
@@ -445,5 +392,6 @@
   }
 </script>
 
+<script src="app-nav.js"></script>
 </body>
 </html>

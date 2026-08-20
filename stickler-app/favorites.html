@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favorites — Stickler Properties</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e5e5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  }
+
+  @media (max-height: 900px) {
+    body { zoom: 0.8; }
+  }
+
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: #000000;
+    border-radius: 44px;
+    padding: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 32px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    flex-shrink: 0;
+  }
+
+  .page-header {
+    padding: 6px 20px 20px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #000000;
+  }
+
+  .page-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 30px;
+    color: #000000;
+  }
+
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 32px 16px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: #F2F2F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: #000000;
+    opacity: 0.35;
+  }
+
+  .empty-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    color: #000000;
+    margin-bottom: 12px;
+  }
+
+  .empty-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: #000000;
+    opacity: 0.5;
+    line-height: 1.55;
+    max-width: 220px;
+    margin-bottom: 24px;
+  }
+
+  .discover-btn {
+    width: 100%;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .discover-btn:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>&#9679;&#9679;&#9679;</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">Favorites</div>
+    </div>
+
+    <div class="content">
+      <div class="empty-icon">
+        <!-- Briefcase icon -->
+        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+          <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+          <line x1="12" y1="12" x2="12" y2="12"></line>
+          <path d="M2 12h20"></path>
+        </svg>
+      </div>
+
+      <div class="empty-title">You don't have properties saved yet</div>
+      <div class="empty-subtitle">Start exploring now and save your favorite properties for easy access later.</div>
+
+      <button class="discover-btn" onclick="window.location.href='marketplace-map.html'">
+        Discover Properties
+      </button>
+    </div>
+
+    <div id="appNavMount"></div>
+
+  </div>
+</div>
+
+<script src="listings.js"></script>
+<script src="app-nav.js"></script>
+</body>
+</html>

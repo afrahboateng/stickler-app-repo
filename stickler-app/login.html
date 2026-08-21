@@ -325,35 +325,26 @@
   var SUPABASE_URL = 'https://pjqsceuvwswgtzjinlvm.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_R_sjrdmjaLBSJ5RUubIkcA_RqjqmfDr';
 
-  // Check if already logged in — if so skip straight to onboarding
-  function checkSession() {
-    var session = localStorage.getItem('stickler_session');
-    if (session) {
-      window.location.href = 'onboarding.html';
-    }
-  }
-  checkSession();
+  // Always go to onboarding — regardless of auth state for demo purposes
+  var DESTINATION = 'onboarding.html';
 
-  // Handle OAuth callback — Supabase redirects back here with tokens in the URL hash
+  // Handle OAuth callback — Supabase returns tokens in the URL hash
+  // This runs when Google redirects back to this page after login
   function handleAuthCallback() {
     var hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
-      var params = new URLSearchParams(hash.replace('#', '?'));
-      var accessToken = params.get('access_token');
-      var refreshToken = params.get('refresh_token');
-      if (accessToken) {
-        localStorage.setItem('stickler_session', JSON.stringify({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          timestamp: Date.now()
-        }));
-        // Clean up URL and proceed
-        window.history.replaceState(null, '', window.location.pathname);
-        window.location.href = 'onboarding.html';
-      }
+    if (hash && (hash.includes('access_token') || hash.includes('error'))) {
+      // Auth completed (success or error) — just go to onboarding either way
+      window.history.replaceState(null, '', window.location.pathname);
+      window.location.href = DESTINATION;
+      return true;
     }
+    return false;
   }
-  handleAuthCallback();
+
+  // Run callback check first — if we just came back from Google, redirect immediately
+  if (!handleAuthCallback()) {
+    // Not a callback — normal page load, nothing to do
+  }
 
   function signInWithGoogle() {
     var btn = document.getElementById('googleBtn');
@@ -361,7 +352,9 @@
     btn.disabled = true;
     overlay.classList.add('visible');
 
-    var redirectTo = window.location.origin + window.location.pathname;
+    // Redirect back to THIS page after Google auth
+    // Supabase will append the token to the URL hash
+    var redirectTo = window.location.href.split('#')[0].split('?')[0];
 
     var url = SUPABASE_URL + '/auth/v1/authorize'
       + '?provider=google'
@@ -370,21 +363,13 @@
     window.location.href = url;
   }
 
-  function showError(msg) {
-    var el = document.getElementById('errorMsg');
-    el.textContent = msg;
-    el.classList.add('visible');
-    document.getElementById('loadingOverlay').classList.remove('visible');
-    document.getElementById('googleBtn').disabled = false;
-  }
-
-  // DEV ONLY: skip login during testing
+  // DEV ONLY: skip login during testing — remove before App Store submission
   function skipLogin() {
     localStorage.setItem('stickler_session', JSON.stringify({
       access_token: 'dev_skip',
       timestamp: Date.now()
     }));
-    window.location.href = 'onboarding.html';
+    window.location.href = DESTINATION;
   }
 </script>
 

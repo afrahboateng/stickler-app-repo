@@ -29,18 +29,26 @@ function fetchListingsForCity(cityKey) {
     return res.json();
   })
   .then(function(rows) {
-    // Shape each row to match what the existing rendering code expects
     return rows.map(function(r) {
       return {
-        city:    r.city,
-        lat:     r.lat,
-        lng:     r.lng,
-        price:   r.price,
-        address: r.address,
-        beds:    r.beds,
-        baths:   r.baths,
-        sqft:    r.sqft,
-        photo:   r.photo_url   // listings.js uses .photo, DB uses photo_url
+        city:          r.city,
+        lat:           r.lat,
+        lng:           r.lng,
+        price:         r.price,
+        address:       r.address,
+        beds:          r.beds,
+        baths:         r.baths,
+        sqft:          r.sqft,
+        photo:         r.photo_url,
+        arv:           r.arv,
+        gross_margin:  r.gross_margin,
+        property_type: r.property_type,
+        parking:       r.parking,
+        year_built:    r.year_built,
+        lot_size:      r.lot_size,
+        market_rent:   r.market_rent,
+        overview:      r.overview,
+        status:        r.status
       };
     });
   });

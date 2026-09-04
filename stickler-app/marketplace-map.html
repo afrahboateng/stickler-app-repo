@@ -718,7 +718,6 @@
               <div class="agent-stars" id="agentStars"></div>
             </div>
             <button class="agent-btn" id="agentInquiryBtn">Send inquiry</button>
-            <button class="agent-btn" id="agentDealsBtn">View all agent listings</button>
           </div>
           </div>
         <div class="detail-footer">
@@ -899,9 +898,6 @@
 
       document.getElementById('agentInquiryBtn').onclick = function() {
         window.location.href = 'messages.html';
-      };
-      document.getElementById('agentDealsBtn').onclick = function() {
-        alert('Coming soon — view all listings by ' + p.agent_name);
       };
       document.getElementById('agentSection').style.display = 'block';
     } else {

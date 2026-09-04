@@ -342,7 +342,7 @@
     position: absolute;
     top: 14px;
     left: 56px;
-    background: #2B4EFF;
+    background: #000000;
     color: #FFFFFF;
     font-size: 11px;
     font-weight: 700;
@@ -376,7 +376,7 @@
   .detail-arv {
     font-size: 14px;
     font-weight: 600;
-    color: #2B4EFF;
+    color: #000000;
   }
 
   .detail-address {
@@ -659,6 +659,21 @@
     color: #FFFFFF;
     opacity: 0.5;
   }
+
+  .agent-section { margin-top: 16px; padding: 16px 16px 8px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; }
+  .agent-section-label { font-size: 17px; font-weight: 700; color: #000; margin-bottom: 16px; }
+  .agent-card-inner { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 16px; }
+  .agent-photo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(0,0,0,0.08); margin-bottom: 10px; background: #E0E0E0; display: block; }
+  .agent-initials { width: 72px; height: 72px; border-radius: 50%; background: #000; color: #fff; display: none; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+  .agent-name { font-size: 15px; color: rgba(0,0,0,0.5); margin-bottom: 2px; }
+  .agent-company { font-size: 17px; font-weight: 700; color: #000; margin-bottom: 10px; }
+  .agent-stars { display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .star-filled { color: #F59E0B; font-size: 18px; line-height: 1; }
+  .star-empty { color: #D1D5DB; font-size: 18px; line-height: 1; }
+  .agent-rating-num { font-size: 14px; font-weight: 600; color: #000; margin-left: 4px; }
+  .agent-reviews-text { font-size: 14px; color: #000; }
+  .agent-btn { width: 100%; padding: 14px 0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-bottom: 8px; border: 1px solid #000; background: #fff; color: #000; display: block; }
+  .agent-btn:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
@@ -729,10 +744,23 @@
             Showing Times
           </button>
           <div class="showing-times-panel" id="showingTimesPanel"></div>
-        </div>
+          <div class="agent-section" id="agentSection" style="display:none">
+            <div class="agent-section-label">Contact details</div>
+            <div class="agent-card-inner">
+              <img class="agent-photo" id="agentPhoto" src="" alt=""
+                onerror="this.style.display='none';document.getElementById('agentInitialsEl').style.display='flex'">
+              <div class="agent-initials" id="agentInitialsEl" style="display:none"></div>
+              <div class="agent-name" id="agentName"></div>
+              <div class="agent-company">Stickler Properties</div>
+              <div class="agent-stars" id="agentStars"></div>
+            </div>
+            <button class="agent-btn" id="agentInquiryBtn">Send inquiry</button>
+            <button class="agent-btn" id="agentDealsBtn">View all agent listings</button>
+          </div>
+          </div>
         <div class="detail-footer">
-          <button class="get-funding-btn" onclick="">Get Funding</button>
-          <button class="make-offer-btn" onclick="">Make an Offer</button>
+          <button class="get-funding-btn" onclick="window.open('https://stickler-capital.netlify.app', '_blank')">Get Funding</button>
+          <button class="make-offer-btn" onclick="makeOffer(currentOfferIdx)">Make an Offer</button>
         </div>
       </div>
     </div>
@@ -829,7 +857,9 @@
     return '$' + n.toLocaleString();
   }
 
+  var currentOfferIdx = 0;
   function openDetail(idx) {
+    currentOfferIdx = idx;
     var p = currentListings[idx];
     document.getElementById('detailPhoto').src = p.photo;
     document.getElementById('detailPhoto').alt = p.address;
@@ -858,10 +888,51 @@
       if (p.market_rent) overviewParts.push('Market Rent: ' + formatDollars(p.market_rent));
     }
     document.getElementById('detailOverview').textContent = overviewParts.join('  ·  ');
+
+    // Agent card
+    if (p.agent_name) {
+      var agentPhoto = document.getElementById('agentPhoto');
+      var agentInitials = document.getElementById('agentInitialsEl');
+      agentPhoto.src = p.agent_photo_url || '';
+      agentPhoto.style.display = 'block';
+      agentInitials.style.display = 'none';
+      agentInitials.textContent = p.agent_name.split(' ').map(function(n){return n[0];}).join('');
+      document.getElementById('agentName').textContent = p.agent_name;
+
+      // Stars: filled circles then empty, then rating number then "X Reviews"
+      var rating = p.agent_rating || 0;
+      var reviews = p.agent_reviews || 0;
+      var filled = Math.round(rating);
+      var starsHtml = '';
+      for (var s = 1; s <= 5; s++) {
+        starsHtml += '<span class="' + (s <= filled ? 'star-filled' : 'star-empty') + '">&#9733;</span>';
+      }
+      starsHtml += '<span class="agent-rating-num">' + rating.toFixed(1) + '</span>';
+      starsHtml += '<span class="agent-reviews-text">&nbsp;' + reviews + ' Reviews</span>';
+      document.getElementById('agentStars').innerHTML = starsHtml;
+
+      document.getElementById('agentInquiryBtn').onclick = function() {
+        window.location.href = 'messages.html';
+      };
+      document.getElementById('agentDealsBtn').onclick = function() {
+        alert('Coming soon — view all listings by ' + p.agent_name);
+      };
+      document.getElementById('agentSection').style.display = 'block';
+    } else {
+      document.getElementById('agentSection').style.display = 'none';
+    }
     document.getElementById('showingTimesPanel').classList.remove('is-open');
     document.getElementById('detailOverlay').classList.add('is-open');
   }
-  function closeDetail() {
+  function makeOffer(idx) {
+    var p = currentListings[idx];
+    window._offerPrice = p.price;
+    window._offerArv = p.arv;
+    window._offerAddress = p.address;
+    window._offerPhoto = p.photo;
+    window.location.href = 'make-offer.html';
+  }
+    function closeDetail() {
     document.getElementById('detailOverlay').classList.remove('is-open');
   }
 

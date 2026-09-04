@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make an Offer — Stickler</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #e5e5e0; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
+  @media (max-height: 900px) { body { zoom: 0.8; } }
+
+  .phone { width: 390px; height: 844px; background: #000; border-radius: 44px; padding: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .screen { width: 100%; height: 100%; background: #F5F5F5; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+
+  /* STATUS BAR */
+  .status-bar { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; font-size: 14px; font-weight: 600; color: #000; flex-shrink: 0; background: #FFFFFF; }
+
+  /* HEADER */
+  .page-header { background: #FFFFFF; padding: 10px 20px 14px; flex-shrink: 0; position: relative; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .back-btn { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #000; cursor: pointer; padding: 4px 8px; }
+  .header-title { font-size: 17px; font-weight: 700; color: #000; }
+  .header-sub { font-size: 13px; color: rgba(0,0,0,0.4); margin-top: 2px; }
+
+  /* PROGRESS BAR */
+  .progress-track { display: flex; gap: 4px; padding: 12px 16px 0; background: #FFFFFF; flex-shrink: 0; }
+  .progress-seg { flex: 1; height: 3px; border-radius: 2px; background: #E0E0E0; transition: background 0.3s; }
+  .progress-seg.done { background: #000000; }
+
+  /* CONTENT */
+  .content { flex: 1; overflow-y: auto; padding: 16px; }
+
+  /* STEP PANELS */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* PROPERTY MINI CARD */
+  .property-mini { display: flex; align-items: center; gap: 12px; background: #FFFFFF; border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+  .property-mini-img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #E0E0E0; }
+  .property-mini-price { font-size: 18px; font-weight: 700; color: #000; margin-bottom: 2px; }
+  .property-mini-arv { font-size: 13px; color: rgba(0,0,0,0.5); margin-bottom: 4px; }
+  .property-mini-addr { font-size: 12px; color: rgba(0,0,0,0.5); display: flex; align-items: center; gap: 4px; }
+
+  /* CONDITIONS STEP */
+  .conditions-box { background: #FFFFFF; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .conditions-title { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 20px; }
+  .checkbox-row { display: flex; gap: 14px; align-items: flex-start; }
+  .checkbox-custom { width: 28px; height: 28px; border-radius: 6px; border: 2px solid #000; background: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all 0.15s; margin-top: 2px; }
+  .checkbox-custom.unchecked { background: #FFFFFF; }
+  .checkbox-custom svg { display: block; }
+  .conditions-text { font-size: 15px; color: #000; line-height: 1.6; }
+
+  /* FINANCING TOGGLE */
+  .financing-toggle { display: flex; border: 1px solid #000; border-radius: 10px; overflow: hidden; margin-bottom: 20px; background: #FFFFFF; }
+  .financing-btn { flex: 1; padding: 13px 0; font-size: 15px; font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; color: rgba(0,0,0,0.4); transition: all 0.15s; }
+  .financing-btn.active { background: #000; color: #FFFFFF; }
+
+  /* FORM FIELDS */
+  .field-group { margin-bottom: 16px; }
+  .field-label { font-size: 13px; font-weight: 600; color: rgba(0,0,0,0.6); margin-bottom: 6px; }
+  .field-hint { font-size: 11px; color: rgba(0,0,0,0.35); margin-top: 4px; }
+  .field-input { width: 100%; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 13px 14px; font-size: 15px; color: #000; font-family: inherit; outline: none; transition: border-color 0.2s; }
+  .field-input:focus { border-color: #000; }
+  .field-input::placeholder { color: rgba(0,0,0,0.3); }
+  .field-textarea { resize: none; height: 90px; }
+
+  /* LENDER FIELD — hidden by default */
+  #lenderField { display: none; }
+
+  /* UPLOAD AREA */
+  .upload-notice { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.1); border-radius: 10px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+  .upload-notice-text { font-size: 13px; color: rgba(0,0,0,0.6); line-height: 1.5; }
+  .upload-zone { border: 2px dashed rgba(0,0,0,0.2); border-radius: 12px; padding: 40px 20px; text-align: center; background: #FFFFFF; cursor: pointer; transition: border-color 0.2s; }
+  .upload-zone:hover { border-color: #000; }
+  .upload-icon { margin-bottom: 12px; color: rgba(0,0,0,0.4); }
+  .upload-title { font-size: 16px; font-weight: 700; color: #000; margin-bottom: 4px; }
+  .upload-sub { font-size: 13px; color: rgba(0,0,0,0.4); }
+  .upload-zone input { display: none; }
+  .upload-filename { margin-top: 12px; font-size: 13px; color: #000; font-weight: 600; display: none; }
+
+  /* SUMMARY */
+  .summary-amounts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .summary-amount-card { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 14px; }
+  .summary-amount-label { font-size: 12px; color: rgba(0,0,0,0.45); margin-bottom: 6px; }
+  .summary-amount-value { font-size: 18px; font-weight: 700; color: #000; }
+  .summary-rows { background: #FFFFFF; border-radius: 10px; overflow: hidden; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row-label { font-size: 14px; color: rgba(0,0,0,0.5); }
+  .summary-row-value { font-size: 14px; font-weight: 600; color: #000; }
+
+  /* SUCCESS */
+  .success-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 32px; text-align: center; }
+  .success-circle { width: 80px; height: 80px; border-radius: 50%; background: rgba(52,199,89,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+  .success-title { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 12px; line-height: 1.3; }
+  .success-sub { font-size: 15px; color: rgba(0,0,0,0.45); line-height: 1.6; }
+
+  /* FOOTER BUTTON */
+  .page-footer { padding: 12px 16px 20px; background: #F5F5F5; flex-shrink: 0; }
+  .btn-primary { width: 100%; background: #000; color: #FFFFFF; border: none; border-radius: 12px; padding: 17px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+  .btn-primary:active { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.3; cursor: default; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen" id="mainScreen">
+
+    <div class="status-bar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <button class="back-btn" onclick="handleBack()">&#8249;</button>
+      <div class="header-title">Make offer</div>
+      <div class="header-sub" id="headerSub">Offer conditions</div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-track">
+      <div class="progress-seg" id="seg1"></div>
+      <div class="progress-seg" id="seg2"></div>
+      <div class="progress-seg" id="seg3"></div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="mainContent">
+
+      <!-- STEP 1: Conditions -->
+      <div class="step-panel active" id="step1">
+        <div class="conditions-box">
+          <div class="conditions-title">Make offer conditions</div>
+          <div class="checkbox-row">
+            <div class="checkbox-custom" id="condCheckbox" onclick="toggleCheck()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="conditions-text">I agree to conduct all inquiries into and discussions about this property solely through the Stickler Properties agent and shall not directly contact the seller. Any unauthorized contact with the seller will be considered intentional interference with a Contract. I agree to pay damages of $75,000 to the contract holder and $25,000 to Stickler Properties if I attempt to circumvent or intentionally interfere with this Contract.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Offer details -->
+      <div class="step-panel" id="step2">
+        <div class="property-mini">
+          <img class="property-mini-img" id="offerPropertyImg" src="" alt="">
+          <div>
+            <div class="property-mini-price" id="offerPropertyPrice"></div>
+            <div class="property-mini-arv" id="offerPropertyArv"></div>
+            <div class="property-mini-addr">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path></svg>
+              <span id="offerPropertyAddr"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="financing-toggle">
+          <button class="financing-btn active" id="btnCash" onclick="setFinancing('cash')">Cash</button>
+          <button class="financing-btn" id="btnLender" onclick="setFinancing('lender')">Lender Financing</button>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Offer Amount</div>
+          <input class="field-input" id="offerAmount" type="text" placeholder="$ 0" oninput="formatMoney(this)">
+          <div class="field-hint">* Minimum Offer amount is $1,000</div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">EMD Amount</div>
+          <input class="field-input" id="emdAmount" type="text" value="$ 10,000" oninput="formatMoney(this)">
+          <div class="field-hint">* Minimum EMD amount is $10,000</div>
+        </div>
+
+        <div class="field-group" id="lenderField">
+          <div class="field-label">Lender Name</div>
+          <input class="field-input" id="lenderName" type="text" placeholder="Lender Name">
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Buyer Name</div>
+          <input class="field-input" id="buyerName" type="text" placeholder="Full name">
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Company name</div>
+          <input class="field-input" id="companyName" type="text" placeholder="Company name">
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Add comment</div>
+          <textarea class="field-input field-textarea" id="comment" placeholder="Add comment"></textarea>
+        </div>
+      </div>
+
+      <!-- STEP 3: Documents -->
+      <div class="step-panel" id="step3">
+        <div class="upload-notice">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" flex-shrink="0" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div class="upload-notice-text">Please upload proof of funds to increase the chances of your offer being accepted.</div>
+        </div>
+
+        <label class="upload-zone" for="fileInput">
+          <div class="upload-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 12 15 15"></polyline></svg>
+          </div>
+          <div class="upload-title">Upload your file here</div>
+          <div class="upload-sub">Select pdf, doc, xls, jpg, png or tiff</div>
+          <div class="upload-filename" id="uploadFilename"></div>
+          <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.tiff" onchange="handleFile(this)">
+        </label>
+      </div>
+
+      <!-- STEP 4: Summary -->
+      <div class="step-panel" id="step4">
+        <div class="property-mini">
+          <img class="property-mini-img" id="summaryImg" src="" alt="">
+          <div>
+            <div class="property-mini-price" id="summaryPrice"></div>
+            <div class="property-mini-arv" id="summaryArv"></div>
+            <div class="property-mini-addr">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path></svg>
+              <span id="summaryAddr"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-amounts">
+          <div class="summary-amount-card">
+            <div class="summary-amount-label">Offer Amount:</div>
+            <div class="summary-amount-value" id="summaryOfferAmt"></div>
+          </div>
+          <div class="summary-amount-card">
+            <div class="summary-amount-label">EMD Amount:</div>
+            <div class="summary-amount-value" id="summaryEmd"></div>
+          </div>
+        </div>
+
+        <div class="summary-rows">
+          <div class="summary-row">
+            <span class="summary-row-label">Financing:</span>
+            <span class="summary-row-value" id="summaryFinancing"></span>
+          </div>
+          <div class="summary-row" id="summaryLenderRow" style="display:none">
+            <span class="summary-row-label">Lender Name:</span>
+            <span class="summary-row-value" id="summaryLender"></span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">Buyer Name:</span>
+            <span class="summary-row-value" id="summaryBuyer"></span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">Buyer Company:</span>
+            <span class="summary-row-value" id="summaryCompany"></span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row-label">Comment:</span>
+            <span class="summary-row-value" id="summaryComment"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="page-footer">
+      <button class="btn-primary" id="mainBtn" onclick="nextStep()">Continue</button>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="screen" id="successScreen" style="display:none">
+    <div class="status-bar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+    <div class="success-screen">
+      <div class="success-circle">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="success-title">Your offer successfully submitted!</div>
+      <div class="success-sub">We will notify you when your offer is accepted or rejected.</div>
+    </div>
+    <div class="page-footer">
+      <button class="btn-primary" onclick="window.location.href='marketplace-map.html'">Done</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var currentStep = 1;
+  var checked = true;
+  var financing = 'cash';
+
+  // Property data passed from marketplace (fallback to demo)
+  var offerProperty = {
+    price: window._offerPrice || 365000,
+    arv: window._offerArv || 493000,
+    address: window._offerAddress || '142 Ponce De Leon Ave, Atlanta, GA',
+    photo: window._offerPhoto || 'https://images.unsplash.com/photo-1583437624797-0e3348843acd?fm=jpg&q=80&w=200&fit=crop'
+  };
+
+  // Populate property mini-cards
+  function formatD(n) { return '$' + n.toLocaleString(); }
+  document.getElementById('offerPropertyImg').src = offerProperty.photo;
+  document.getElementById('offerPropertyPrice').textContent = formatD(offerProperty.price);
+  document.getElementById('offerPropertyArv').textContent = '(ARV: ' + formatD(offerProperty.arv) + ')';
+  document.getElementById('offerPropertyAddr').textContent = offerProperty.address;
+  document.getElementById('offerAmount').value = '$ ' + offerProperty.price.toLocaleString();
+
+  var SUBS = ['Offer conditions', 'Offer details', 'Documents & Proof of funds', 'Offer summary'];
+  var BTNS = ['Continue', 'Continue', 'Continue', 'Submit offer'];
+
+  function updateProgress() {
+    for (var i = 1; i <= 3; i++) {
+      document.getElementById('seg' + i).className = 'progress-seg' + (i < currentStep ? ' done' : '');
+    }
+    document.getElementById('headerSub').textContent = SUBS[currentStep - 1];
+    document.getElementById('mainBtn').textContent = BTNS[currentStep - 1];
+  }
+
+  function toggleCheck() {
+    checked = !checked;
+    var box = document.getElementById('condCheckbox');
+    if (checked) {
+      box.classList.remove('unchecked');
+      box.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    } else {
+      box.classList.add('unchecked');
+      box.innerHTML = '';
+    }
+  }
+
+  function setFinancing(type) {
+    financing = type;
+    document.getElementById('btnCash').className = 'financing-btn' + (type === 'cash' ? ' active' : '');
+    document.getElementById('btnLender').className = 'financing-btn' + (type === 'lender' ? ' active' : '');
+    document.getElementById('lenderField').style.display = type === 'lender' ? 'block' : 'none';
+  }
+
+  function formatMoney(input) {
+    var raw = input.value.replace(/[^0-9]/g, '');
+    if (raw) input.value = '$ ' + parseInt(raw).toLocaleString();
+    else input.value = '';
+  }
+
+  function handleFile(input) {
+    var fn = document.getElementById('uploadFilename');
+    if (input.files && input.files[0]) {
+      fn.textContent = '✓ ' + input.files[0].name;
+      fn.style.display = 'block';
+    }
+  }
+
+  function populateSummary() {
+    document.getElementById('summaryImg').src = offerProperty.photo;
+    document.getElementById('summaryPrice').textContent = formatD(offerProperty.price);
+    document.getElementById('summaryArv').textContent = '(ARV: ' + formatD(offerProperty.arv) + ')';
+    document.getElementById('summaryAddr').textContent = offerProperty.address;
+    document.getElementById('summaryOfferAmt').textContent = document.getElementById('offerAmount').value || '--';
+    document.getElementById('summaryEmd').textContent = document.getElementById('emdAmount').value || '--';
+    document.getElementById('summaryFinancing').textContent = financing === 'cash' ? 'Cash' : 'Lender Financing';
+    var lenderRow = document.getElementById('summaryLenderRow');
+    if (financing === 'lender') {
+      lenderRow.style.display = 'flex';
+      document.getElementById('summaryLender').textContent = document.getElementById('lenderName').value || '--';
+    } else {
+      lenderRow.style.display = 'none';
+    }
+    document.getElementById('summaryBuyer').textContent = document.getElementById('buyerName').value || '--';
+    document.getElementById('summaryCompany').textContent = document.getElementById('companyName').value || '--';
+    document.getElementById('summaryComment').textContent = document.getElementById('comment').value || '--';
+  }
+
+  function nextStep() {
+    if (currentStep === 1 && !checked) {
+      alert('Please agree to the conditions to continue.'); return;
+    }
+    if (currentStep === 4) {
+      document.getElementById('mainScreen').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'flex';
+      return;
+    }
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep++;
+    document.getElementById('step' + currentStep).classList.add('active');
+    if (currentStep === 4) populateSummary();
+    updateProgress();
+    document.getElementById('mainContent').scrollTop = 0;
+  }
+
+  function handleBack() {
+    if (currentStep === 1) { window.history.back(); return; }
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep--;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

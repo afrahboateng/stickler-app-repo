@@ -674,6 +674,33 @@
   .agent-reviews-text { font-size: 14px; color: #000; }
   .agent-btn { width: 100%; padding: 14px 0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-bottom: 8px; border: 1px solid #000; background: #fff; color: #000; display: block; }
   .agent-btn:last-child { margin-bottom: 0; }
+
+  .ad-card {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .ad-card img {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+  }
+  .ad-label {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    background: rgba(0,0,0,0.55);
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
 </style>
 </head>
 <body>
@@ -839,7 +866,8 @@
     currentListings = sortListings(_allListings);
     resultsCount.textContent = currentListings.length + (currentListings.length === 1 ? ' result' : ' results') + ' in ' + CITIES[currentCity].label;
 
-    listContent.innerHTML = currentListings.map(function(p, idx) {
+    var AD_HTML = '<div class="ad-card"><img src="ad-homedepot.jpg" alt="Home Depot Pro Xtra"><div class="ad-label">Ad</div></div>';
+    var cards = currentListings.map(function(p, idx) {
       return '' +
         '<div class="listing-card" onclick="openDetail(' + idx + ')">' +
           '<img src="' + p.photo + '" class="listing-photo" alt="' + p.address + '">' +
@@ -849,7 +877,10 @@
             '<div class="listing-stats">' + formatStats(p) + '</div>' +
           '</div>' +
         '</div>';
-    }).join('');
+    });
+    // Insert ad after 3rd card (index 2)
+    if (cards.length >= 3) cards.splice(3, 0, AD_HTML);
+    listContent.innerHTML = cards.join('');
   }
 
   function formatDollars(n) {

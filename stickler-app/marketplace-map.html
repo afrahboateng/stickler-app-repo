@@ -870,11 +870,27 @@
     fetchListingsForCity(cityKey).then(function(listings) {
       currentListings = listings;
       renderMarkers(cityKey);
+      fitMapToCity(cityKey);
     }).catch(function(err) {
       console.error(err);
       currentListings = [];
       renderMarkers(cityKey);
+      fitMapToCity(cityKey);
     });
+  }
+
+  // Zooms the map so every pin in this city is visible.
+  // With no pins, it falls back to the city's default center.
+  function fitMapToCity(cityKey) {
+    if (markers.length) {
+      map.flyToBounds(L.featureGroup(markers).getBounds(), {
+        padding: [60, 60],
+        maxZoom: 13,
+        duration: 0.8
+      });
+    } else {
+      map.flyTo([CITIES[cityKey].lat, CITIES[cityKey].lng], CITIES[cityKey].zoom, { duration: 0.8 });
+    }
   }
   loadCity(currentCity);
 
@@ -987,7 +1003,6 @@
     function(cityKey) {
       currentCity = cityKey;
       updateCurrentCity(cityKey);
-      map.flyTo([CITIES[cityKey].lat, CITIES[cityKey].lng], CITIES[cityKey].zoom);
       loadCity(cityKey);
     }
   );

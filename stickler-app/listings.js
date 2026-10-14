@@ -2,7 +2,7 @@
 // Listing data is fetched from Supabase via supabase-client.js.
 
 var CITIES = {
-  atlanta: { label: "Atlanta, GA", lat: 33.7490, lng: -84.3880, zoom: 10 },
+  atlanta: { label: "Atlanta, GA", lat: 33.7490, lng: -84.3880, zoom: 9 },
   augusta: { label: "Augusta, GA", lat: 33.4735, lng: -81.9748, zoom: 12 },
   dallas:  { label: "Dallas, TX",  lat: 32.8000, lng: -96.7800, zoom: 11 }
 };
@@ -172,6 +172,17 @@ function setupCitySearch(input, getCurrentCity, onSelect) {
   menu.className = 'city-dropdown';
   wrap.appendChild(menu);
 
+  // Start with every known city, then narrow to the ones that
+  // actually have listings once Supabase answers.
+  var available = Object.keys(CITIES);
+  if (typeof fetchActiveCityKeys === 'function') {
+    fetchActiveCityKeys().then(function(keys) {
+      if (keys.length) available = keys;
+    }).catch(function(err) {
+      console.error(err); // keep showing all cities if this fails
+    });
+  }
+
   var matches = [];
   var activeIdx = 0;
 
@@ -180,14 +191,14 @@ function setupCitySearch(input, getCurrentCity, onSelect) {
 
   function filter(query) {
     var q = query.trim().toLowerCase();
-    return Object.keys(CITIES).filter(function(key) {
+    return available.filter(function(key) {
       return !q || CITIES[key].label.toLowerCase().indexOf(q) !== -1;
     });
   }
 
   function draw() {
     if (!matches.length) {
-      var all = Object.keys(CITIES).map(function(k) { return CITIES[k].label; }).join(', ');
+      var all = available.map(function(k) { return CITIES[k].label; }).join(', ');
       menu.innerHTML = '<div class="city-option is-empty">No match. We currently serve ' + all + '.</div>';
     } else {
       menu.innerHTML = matches.map(function(key, i) {
@@ -204,7 +215,7 @@ function setupCitySearch(input, getCurrentCity, onSelect) {
     input.blur();
   }
 
-  // Clicking the box shows every city
+  // Clicking the box shows every available city
   input.addEventListener('focus', function() {
     input.select();
     matches = filter('');

@@ -60,3 +60,30 @@ function fetchListingsForCity(cityKey) {
     });
   });
 }
+
+/**
+ * Returns the city keys (like "atlanta", "dallas") that have at least
+ * one active listing, so the dropdown only offers markets with houses.
+ */
+function fetchActiveCityKeys() {
+  var url = SUPABASE_URL + '/rest/v1/listings?select=city&is_active=eq.true';
+
+  return fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Supabase fetch failed: ' + res.status);
+    return res.json();
+  })
+  .then(function(rows) {
+    var keys = [];
+    rows.forEach(function(r) {
+      // Keep each city once, and only ones the app knows how to display
+      if (r.city && CITIES[r.city] && keys.indexOf(r.city) === -1) keys.push(r.city);
+    });
+    return keys;
+  });
+}

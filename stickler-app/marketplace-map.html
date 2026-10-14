@@ -866,33 +866,41 @@
     });
   }
 
-  function loadCity(cityKey) {
+  // animate = true when someone picks a city; false on first page load
+  function loadCity(cityKey, animate) {
     fetchListingsForCity(cityKey).then(function(listings) {
       currentListings = listings;
       renderMarkers(cityKey);
-      fitMapToCity(cityKey);
+      fitMapToCity(cityKey, animate);
     }).catch(function(err) {
       console.error(err);
       currentListings = [];
       renderMarkers(cityKey);
-      fitMapToCity(cityKey);
+      fitMapToCity(cityKey, animate);
     });
   }
 
-  // Zooms the map so every pin in this city is visible.
-  // With no pins, it falls back to the city's default center.
-  function fitMapToCity(cityKey) {
+  // Frames every pin in this city. Glides when animate is true,
+  // jumps instantly when it's false (no shaking on page load).
+  function fitMapToCity(cityKey, animate) {
     if (markers.length) {
-      map.flyToBounds(L.featureGroup(markers).getBounds(), {
-        padding: [60, 60],
-        maxZoom: 13,
-        duration: 0.8
-      });
+      var bounds = L.featureGroup(markers).getBounds();
+      var opts = { padding: [60, 60], maxZoom: 13 };
+      if (animate) {
+        map.flyToBounds(bounds, Object.assign({ duration: 0.8 }, opts));
+      } else {
+        map.fitBounds(bounds, Object.assign({ animate: false }, opts));
+      }
     } else {
-      map.flyTo([CITIES[cityKey].lat, CITIES[cityKey].lng], CITIES[cityKey].zoom, { duration: 0.8 });
+      var c = CITIES[cityKey];
+      if (animate) {
+        map.flyTo([c.lat, c.lng], c.zoom, { duration: 0.8 });
+      } else {
+        map.setView([c.lat, c.lng], c.zoom, { animate: false });
+      }
     }
   }
-  loadCity(currentCity);
+  loadCity(currentCity, false);
 
   function formatDollars(n) {
     if (!n) return '--';
@@ -1003,7 +1011,7 @@
     function(cityKey) {
       currentCity = cityKey;
       updateCurrentCity(cityKey);
-      loadCity(cityKey);
+      loadCity(cityKey, true);
     }
   );
 

@@ -2,8 +2,9 @@
 // Listing data is fetched from Supabase via supabase-client.js.
 
 var CITIES = {
-  atlanta: { label: "Atlanta, GA", lat: 33.7490, lng: -84.3880, zoom: 11 },
-  augusta: { label: "Augusta, GA", lat: 33.4735, lng: -81.9748, zoom: 12 }
+  atlanta: { label: "Atlanta, GA", lat: 33.7490, lng: -84.3880, zoom: 10 },
+  augusta: { label: "Augusta, GA", lat: 33.4735, lng: -81.9748, zoom: 12 },
+  dallas:  { label: "Dallas, TX",  lat: 32.8000, lng: -96.7800, zoom: 11 }
 };
 
 // Maps whatever a person types in the search bar to a known city key.
@@ -158,3 +159,113 @@ document.addEventListener('scroll', function(e) {
   var counter = track.parentElement.querySelector('.carousel-count');
   if (counter) counter.textContent = idx + ' / ' + track.children.length;
 }, true);
+
+// --- City search dropdown ---
+// Turns a search box into a picker: typing filters our cities,
+// and you can only pick one from the list.
+function setupCitySearch(input, getCurrentCity, onSelect) {
+  injectCitySearchStyles();
+
+  var wrap = input.parentElement; // the .search-bar box
+  wrap.style.position = 'relative';
+  var menu = document.createElement('div');
+  menu.className = 'city-dropdown';
+  wrap.appendChild(menu);
+
+  var matches = [];
+  var activeIdx = 0;
+
+  input.value = CITIES[getCurrentCity()].label;
+  input.setAttribute('autocomplete', 'off');
+
+  function filter(query) {
+    var q = query.trim().toLowerCase();
+    return Object.keys(CITIES).filter(function(key) {
+      return !q || CITIES[key].label.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function draw() {
+    if (!matches.length) {
+      var all = Object.keys(CITIES).map(function(k) { return CITIES[k].label; }).join(', ');
+      menu.innerHTML = '<div class="city-option is-empty">No match. We currently serve ' + all + '.</div>';
+    } else {
+      menu.innerHTML = matches.map(function(key, i) {
+        return '<div class="city-option' + (i === activeIdx ? ' is-active' : '') +
+               '" data-key="' + key + '">' + CITIES[key].label + '</div>';
+      }).join('');
+    }
+    menu.classList.add('is-open');
+  }
+
+  function choose(key) {
+    menu.classList.remove('is-open');
+    if (key !== getCurrentCity()) onSelect(key);
+    input.blur();
+  }
+
+  // Clicking the box shows every city
+  input.addEventListener('focus', function() {
+    input.select();
+    matches = filter('');
+    activeIdx = 0;
+    draw();
+  });
+
+  // Typing narrows the list
+  input.addEventListener('input', function() {
+    matches = filter(input.value);
+    activeIdx = 0;
+    draw();
+  });
+
+  // Arrow keys move the highlight, Enter picks it, Escape cancels
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, matches.length - 1);
+      draw();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, 0);
+      draw();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (matches.length) choose(matches[activeIdx]);
+    } else if (e.key === 'Escape') {
+      input.blur();
+    }
+  });
+
+  // Clicking a city picks it
+  menu.addEventListener('mousedown', function(e) {
+    var opt = e.target.closest('.city-option[data-key]');
+    if (!opt) return;
+    e.preventDefault();
+    choose(opt.getAttribute('data-key'));
+  });
+
+  // Leaving the box without picking puts the current city back
+  input.addEventListener('blur', function() {
+    menu.classList.remove('is-open');
+    input.value = CITIES[getCurrentCity()].label;
+  });
+}
+
+// Dropdown styles live here so both marketplace pages share them.
+function injectCitySearchStyles() {
+  if (document.getElementById('city-search-styles')) return;
+  var s = document.createElement('style');
+  s.id = 'city-search-styles';
+  s.textContent =
+    '.city-dropdown { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;' +
+    '  background: #FFFFFF; border: 1px solid #000000; border-radius: 10px;' +
+    '  box-shadow: 0 6px 20px rgba(0,0,0,0.12); z-index: 1000; overflow: hidden; }' +
+    '.city-dropdown.is-open { display: block; }' +
+    '.city-option { padding: 12px 14px; font-size: 14px; color: #000000; cursor: pointer;' +
+    '  border-bottom: 1px solid rgba(0,0,0,0.08); }' +
+    '.city-option:last-child { border-bottom: none; }' +
+    '.city-option:hover, .city-option.is-active { background: rgba(0,0,0,0.05); }' +
+    '.city-option.is-empty { color: rgba(0,0,0,0.5); font-size: 13px; cursor: default; }';
+  document.head.appendChild(s);
+}

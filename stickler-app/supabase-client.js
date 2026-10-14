@@ -39,6 +39,7 @@ function fetchListingsForCity(cityKey) {
         baths:           r.baths,
         sqft:            r.sqft,
         photo:           r.photo_url,
+        photos:          (r.photo_urls && r.photo_urls.length) ? r.photo_urls : [r.photo_url],
         arv:             r.arv,
         gross_margin:    r.gross_margin,
         property_type:   r.property_type,

@@ -123,3 +123,38 @@ var REGISTRATION_NOTICE_TEXT = "Thanks for registering! A Stickler agent will co
 function renderRegistrationNotice() {
   return '<div class="registration-notice"><div class="registration-notice-title">Thanks for registering!</div><div class="registration-notice-text">A Stickler agent will contact you shortly to set up a quick onboarding call to get you access to our exclusive marketplace. This verification helps maintain our investor-only marketplace\'s integrity and ensures you\'re ready to navigate our process so you don\'t miss out on the best deals. You can also reach out directly at <strong>(404) 555-0182</strong>.</div></div>';
 }
+
+// --- Photo carousel ---
+// Builds a swipeable row of photos. With only one photo, it's a plain image.
+function renderPhotoCarousel(photos, alt, imgClass) {
+  var list = (photos || []).filter(Boolean);
+  if (list.length <= 1) {
+    return '<img src="' + (list[0] || '') + '" class="' + imgClass + '" alt="' + alt + '">';
+  }
+  var imgs = list.map(function(src, i) {
+    return '<img src="' + src + '" class="' + imgClass + '" alt="' + alt + '"' + (i > 0 ? ' loading="lazy"' : '') + '>';
+  }).join('');
+  return '<div class="carousel">' +
+      '<div class="carousel-track">' + imgs + '</div>' +
+      '<button class="carousel-arrow carousel-prev" onclick="carouselStep(event, this, -1)" aria-label="Previous photo">&#8249;</button>' +
+      '<button class="carousel-arrow carousel-next" onclick="carouselStep(event, this, 1)" aria-label="Next photo">&#8250;</button>' +
+      '<div class="carousel-count">1 / ' + list.length + '</div>' +
+    '</div>';
+}
+
+// Arrow buttons: slide one photo left or right.
+// stopPropagation stops the tap from also opening the listing.
+function carouselStep(e, btn, dir) {
+  e.stopPropagation();
+  var track = btn.parentElement.querySelector('.carousel-track');
+  track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' });
+}
+
+// Keeps the "2 / 4" counter in sync when someone swipes.
+document.addEventListener('scroll', function(e) {
+  var track = e.target;
+  if (!track.classList || !track.classList.contains('carousel-track')) return;
+  var idx = Math.round(track.scrollLeft / track.clientWidth) + 1;
+  var counter = track.parentElement.querySelector('.carousel-count');
+  if (counter) counter.textContent = idx + ' / ' + track.children.length;
+}, true);

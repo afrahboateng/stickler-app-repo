@@ -665,7 +665,11 @@
   .carousel-track::-webkit-scrollbar { display: none; }
   .carousel-track img {
     flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
   .carousel-arrow {
     position: absolute;

@@ -130,7 +130,7 @@ function renderRegistrationNotice() {
 function renderPhotoCarousel(photos, alt, imgClass) {
   var list = (photos || []).filter(Boolean);
   if (list.length <= 1) {
-    return '<img src="' + (list[0] || '') + '" class="' + imgClass + '" alt="' + alt + '">';
+    return '<img src="' + src + '" class="' + imgClass + '" alt="' + alt + '">';
   }
   var imgs = list.map(function(src, i) {
     return '<img src="' + src + '" class="' + imgClass + '" alt="' + alt + '"' + (i > 0 ? ' loading="lazy"' : '') + '>';
@@ -155,9 +155,12 @@ function carouselStep(e, btn, dir) {
 document.addEventListener('scroll', function(e) {
   var track = e.target;
   if (!track.classList || !track.classList.contains('carousel-track')) return;
-  var idx = Math.round(track.scrollLeft / track.clientWidth) + 1;
+  var total = track.children.length;
+  var slideWidth = track.firstElementChild ? track.firstElementChild.offsetWidth : track.clientWidth;
+  var idx = Math.round(track.scrollLeft / slideWidth) + 1;
+  idx = Math.max(1, Math.min(idx, total));
   var counter = track.parentElement.querySelector('.carousel-count');
-  if (counter) counter.textContent = idx + ' / ' + track.children.length;
+  if (counter) counter.textContent = idx + ' / ' + total;
 }, true);
 
 // --- City search dropdown ---
